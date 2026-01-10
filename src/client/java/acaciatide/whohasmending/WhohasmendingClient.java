@@ -2,7 +2,7 @@ package acaciatide.whohasmending;
 
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerDataStorage;
-import acaciatide.whohasmending.render.VillagerNametagRenderer;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -40,7 +40,7 @@ public class WhohasmendingClient implements ClientModInitializer {
         registerEventListeners();
         
         // レンダラーの登録
-        VillagerNametagRenderer.register();
+
         
         Whohasmending.LOGGER.info("Who Has Mending client initialized successfully");
     }
