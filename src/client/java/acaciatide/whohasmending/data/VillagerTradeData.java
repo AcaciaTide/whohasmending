@@ -76,16 +76,9 @@ public class VillagerTradeData {
             return;
         }
 
-        // 優先度が最も高い（数値が小さい）取引を探す
-        TradeEntry bestTrade = trades.stream()
-                .min((a, b) -> Integer.compare(a.getPriority(), b.getPriority()))
-                .orElse(null);
-
-        if (bestTrade != null) {
-            this.displayName = bestTrade.getDisplayText();
-        } else {
-            this.displayName = profession;
-        }
+        // 単一の取引（一番最初に見つかったエンチャント本）を表示
+        TradeEntry trade = trades.get(0);
+        this.displayName = trade.getDisplayText();
         
         this.lastUpdated = System.currentTimeMillis();
     }

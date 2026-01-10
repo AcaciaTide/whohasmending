@@ -46,6 +46,7 @@ public class VillagerTradeCapture {
             TradeEntry entry = extractTradeEntry(offer);
             if (entry != null) {
                 data.addTrade(entry);
+                break; // 最初の1つを見つけたら終了
             }
         }
 
@@ -53,8 +54,8 @@ public class VillagerTradeCapture {
         
         VillagerDataManager.getInstance().putVillagerData(villagerUuid, data);
         
-        Whohasmending.LOGGER.info("Captured {} trades for villager {} ({}): display='{}'", 
-                data.getTrades().size(), villagerUuid, profession, data.getDisplayName());
+        Whohasmending.LOGGER.info("Captured trade for villager {} ({}): display='{}'", 
+                villagerUuid, profession, data.getDisplayName());
     }
 
     /**
@@ -81,6 +82,7 @@ public class VillagerTradeCapture {
             TradeEntry entry = extractTradeEntry(offer);
             if (entry != null) {
                 data.addTrade(entry);
+                break; // 最初の1つ（一番上のエンチャント本）を見つけたら終了
             }
         }
 
@@ -88,8 +90,8 @@ public class VillagerTradeCapture {
         
         VillagerDataManager.getInstance().putVillagerData(villagerUuid, data);
         
-        Whohasmending.LOGGER.info("Captured {} trades for villager {} ({}): display='{}'", 
-                data.getTrades().size(), villagerUuid, profession, data.getDisplayName());
+        Whohasmending.LOGGER.info("Captured trade for villager {} ({}): display='{}'", 
+                villagerUuid, profession, data.getDisplayName());
     }
 
     /**
@@ -109,8 +111,6 @@ public class VillagerTradeCapture {
         String enchantmentName = null;
         int enchantmentLevel = 0;
         int emeraldCost = buyItem.getCount();
-        int priority = 100; // デフォルト優先度（低い）
-
         // エンチャント本の場合、エンチャント情報を抽出
         if (sellItem.isOf(Items.ENCHANTED_BOOK)) {
             ItemEnchantmentsComponent enchantments = EnchantmentHelper.getEnchantments(sellItem);
@@ -120,19 +120,16 @@ public class VillagerTradeCapture {
                 int level = entry.getIntValue();
                 
                 // エンチャント名を取得
-                Text nameText = Enchantment.getName(enchantment, level);
+                // Text nameText = Enchantment.getName(enchantment, level); // 未使用
                 enchantmentName = extractEnchantmentBaseName(enchantment);
                 enchantmentLevel = level;
-                
-                // 優先度を計算
-                priority = calculatePriority(enchantment, level);
                 
                 // 最初のエンチャントのみ使用（通常は1つだけ）
                 break;
             }
         }
 
-        return new TradeEntry(itemName, enchantmentName, enchantmentLevel, emeraldCost, priority);
+        return new TradeEntry(itemName, enchantmentName, enchantmentLevel, emeraldCost);
     }
 
     /**
@@ -141,51 +138,5 @@ public class VillagerTradeCapture {
     private static String extractEnchantmentBaseName(RegistryEntry<Enchantment> enchantment) {
         // 現在の言語設定に従って翻訳された名前を取得
         return enchantment.value().description().getString();
-    }
-    /**
-     * エンチャントの優先度を計算
-     * 1 = 最高優先度（修繕）
-     * 100 = 最低優先度
-     */
-    private static int calculatePriority(RegistryEntry<Enchantment> enchantment, int level) {
-        String key = enchantment.getKey()
-                .map(k -> k.getValue().getPath())
-                .orElse("");
-
-        // Tier 1: 最重要（修繕）
-        if ("mending".equals(key)) {
-            return 1;
-        }
-
-        // Tier 2: 高優先度（高レベルエンチャント）
-        if (isHighPriorityEnchantment(key, level)) {
-            return 2;
-        }
-
-        // Tier 3: 中優先度（有用なエンチャント）
-        if (isMediumPriorityEnchantment(key, level)) {
-            return 3;
-        }
-
-        // Tier 4: その他
-        return 4;
-    }
-
-    private static boolean isHighPriorityEnchantment(String key, int level) {
-        return switch (key) {
-            case "sharpness", "efficiency", "power" -> level >= 5;
-            case "protection" -> level >= 4;
-            case "unbreaking" -> level >= 3;
-            default -> false;
-        };
-    }
-
-    private static boolean isMediumPriorityEnchantment(String key, int level) {
-        return switch (key) {
-            case "silk_touch", "infinity" -> true;
-            case "fortune", "looting" -> level >= 3;
-            case "fire_aspect" -> level >= 2;
-            default -> false;
-        };
     }
 }

@@ -8,17 +8,15 @@ public class TradeEntry {
     private String enchantmentName;
     private int enchantmentLevel;
     private int emeraldCost;
-    private int priority;
 
     public TradeEntry() {
     }
 
-    public TradeEntry(String itemName, String enchantmentName, int enchantmentLevel, int emeraldCost, int priority) {
+    public TradeEntry(String itemName, String enchantmentName, int enchantmentLevel, int emeraldCost) {
         this.itemName = itemName;
         this.enchantmentName = enchantmentName;
         this.enchantmentLevel = enchantmentLevel;
         this.emeraldCost = emeraldCost;
-        this.priority = priority;
     }
 
     // Getters
@@ -38,9 +36,7 @@ public class TradeEntry {
         return emeraldCost;
     }
 
-    public int getPriority() {
-        return priority;
-    }
+
 
     // Setters
     public void setItemName(String itemName) {
@@ -59,9 +55,7 @@ public class TradeEntry {
         this.emeraldCost = emeraldCost;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+
 
     /**
      * 表示用テキストを生成
