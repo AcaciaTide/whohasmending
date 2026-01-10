@@ -1,6 +1,6 @@
 # Who has Mending?
 
-A client-side utility mod that visualizes villager trades (specifically enchanted books) as nameplates above their heads. No more signs, no more manual naming, and no more forgetting "Who has Mending?".
+A client-side utility mod that visualizes villager trades (only enchanted books) as nameplates above their heads. No more signs, no more manual naming, and no more forgetting "Who has Mending?".
 
 ## Key Features
 
