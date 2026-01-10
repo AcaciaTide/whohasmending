@@ -10,8 +10,8 @@ import java.util.UUID;
 public class VillagerTradeData {
     private UUID villagerUuid;
     private String displayName;
-    private String profession;
-    private long lastUpdated;
+    private transient String profession; // JSON保存対象外
+    private transient long lastUpdated;  // JSON保存対象外
     private List<TradeEntry> trades;
 
     public VillagerTradeData() {

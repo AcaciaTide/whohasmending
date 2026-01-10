@@ -33,6 +33,9 @@ public class WhohasmendingClient implements ClientModInitializer {
         // キーバインドの登録
         registerKeyBindings();
         
+        // コマンドの登録
+        registerCommands();
+        
         // イベントリスナーの登録
         registerEventListeners();
         
@@ -86,6 +89,35 @@ public class WhohasmendingClient implements ClientModInitializer {
         });
         
         Whohasmending.LOGGER.info("Registered event listeners");
+    }
+
+    /**
+     * コマンドを登録
+     */
+    private void registerCommands() {
+        net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            // /whohasmending reset
+            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("whohasmending")
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("reset")
+                    .executes(context -> {
+                        VillagerDataManager.getInstance().clearCurrentWorldData();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
+                        return 1;
+                    })
+                )
+            );
+
+            // ショートカット: /whm reset
+            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("whm")
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("reset")
+                    .executes(context -> {
+                        VillagerDataManager.getInstance().clearCurrentWorldData();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
+                        return 1;
+                    })
+                )
+            );
+        });
     }
 
     /**

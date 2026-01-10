@@ -4,7 +4,7 @@ package acaciatide.whohasmending.data;
  * 個別の取引エントリを表すデータクラス
  */
 public class TradeEntry {
-    private String itemName;
+    private transient String itemName; // JSON保存対象外
     private String enchantmentName;
     private int enchantmentLevel;
     private int emeraldCost;

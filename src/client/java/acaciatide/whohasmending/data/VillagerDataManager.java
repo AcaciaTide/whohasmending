@@ -118,6 +118,24 @@ public class VillagerDataManager {
     }
 
     /**
+     * 現在のワールドの全データを削除
+     */
+    public void clearCurrentWorldData() {
+        if (villagerData.isEmpty()) {
+            return;
+        }
+        
+        villagerData.clear();
+        isDirty = false; // クリア時はここでフラグを落とす
+        
+        // saveCurrentWorldはisEmptyの場合スキップするので、直接saveを呼んで空データを書き込む
+        if (currentWorldId != null) {
+            VillagerDataStorage.save(currentWorldId, new HashMap<>());
+            Whohasmending.LOGGER.info("Cleared all villager data for current world: {}", currentWorldId);
+        }
+    }
+
+    /**
      * 全村人データを取得（レンダリング用）
      */
     public Map<UUID, VillagerTradeData> getAllVillagerData() {
