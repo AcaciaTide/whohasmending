@@ -32,7 +32,7 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 *   **Reset Data**: Use `/whohasmending reset` (or `/whm reset`) to clear all saved data for the current world.
 
 ## Compatibility
-*   **Client-Side Only**: Works on servers without needing to be installed on the server.
+*   **Client-Side Only**: Works on servers without needing to be installed on the server. Of course, it also works in singleplayer.
 *   **Version Support**: Currently supports **Minecraft 1.21.11**. Backports to older versions may be considered if time permits.
 
 ## License
