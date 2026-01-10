@@ -34,33 +34,8 @@ public class VillagerTradeData {
         return displayName;
     }
 
-    public String getProfession() {
-        return profession;
-    }
-
-    public long getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public List<TradeEntry> getTrades() {
-        return trades;
-    }
-
-    // Setters
     public void setVillagerUuid(UUID villagerUuid) {
         this.villagerUuid = villagerUuid;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
-    }
-
-    public void setLastUpdated(long lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 
     public void setTrades(List<TradeEntry> trades) {

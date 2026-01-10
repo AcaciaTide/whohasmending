@@ -120,7 +120,7 @@ public class VillagerTradeCapture {
                 int level = entry.getIntValue();
                 
                 // エンチャント名を取得
-                // Text nameText = Enchantment.getName(enchantment, level); // 未使用
+
                 enchantmentName = extractEnchantmentBaseName(enchantment);
                 enchantmentLevel = level;
                 
