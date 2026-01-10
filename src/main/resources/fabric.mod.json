@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "whohasmending",
 	"version": "${version}",
-	"name": "Who has Mending",
+	"name": "Who has Mending?",
 	"description": "Displays villager trade information (specifically enchanted books and their costs) above their heads. Useful for finding mending books!",
 	"authors": [
 		"AcaciaTide"
