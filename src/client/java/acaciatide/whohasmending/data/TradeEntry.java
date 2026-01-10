@@ -36,8 +36,6 @@ public class TradeEntry {
         return emeraldCost;
     }
 
-
-
     // Setters
     public void setItemName(String itemName) {
         this.itemName = itemName;
@@ -54,8 +52,6 @@ public class TradeEntry {
     public void setEmeraldCost(int emeraldCost) {
         this.emeraldCost = emeraldCost;
     }
-
-
 
     /**
      * 表示用テキストを生成
@@ -90,12 +86,5 @@ public class TradeEntry {
         
         String[] romans = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
         return romans[num];
-    }
-
-    /**
-     * エンチャント本かどうかを判定
-     */
-    public boolean isEnchantedBook() {
-        return enchantmentName != null && !enchantmentName.isEmpty();
     }
 }
