@@ -43,7 +43,7 @@ public class VillagerTradeData {
     }
 
     /**
-     * 取引リストを更新し、最も優先度の高いアイテムを表示名に設定
+     * 取引リストから表示名を設定（最初のエンチャント本を使用）
      */
     public void updateDisplayName() {
         if (trades.isEmpty()) {

@@ -1,6 +1,5 @@
 package acaciatide.whohasmending.mixin.client;
 
-import acaciatide.whohasmending.Whohasmending;
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerTradeData;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -47,8 +46,6 @@ public abstract class LivingEntityRendererMixin {
             if (state.nameLabelPos == null) {
                 state.nameLabelPos = villager.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, villager.getYaw());
             }
-
-
         }
     }
 }

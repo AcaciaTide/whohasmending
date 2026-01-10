@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Who Has Mending クライアントエントリーポイント
@@ -39,9 +38,6 @@ public class WhohasmendingClient implements ClientModInitializer {
         // イベントリスナーの登録
         registerEventListeners();
         
-        // レンダラーの登録
-
-        
         Whohasmending.LOGGER.info("Who Has Mending client initialized successfully");
     }
 
@@ -57,7 +53,7 @@ public class WhohasmendingClient implements ClientModInitializer {
                 KeyBinding.Category.MISC
         ));
         
-        Whohasmending.LOGGER.info("Registered key binding: H to toggle display");
+        Whohasmending.LOGGER.info("Registered key binding for toggle display");
     }
 
     /**
