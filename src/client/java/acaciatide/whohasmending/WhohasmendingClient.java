@@ -69,7 +69,7 @@ public class WhohasmendingClient implements ClientModInitializer {
                 // フィードバックメッセージ
                 boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                 if (client.player != null) {
-                    String message = enabled ? "§aWho Has Mending: 表示ON" : "§cWho Has Mending: 表示OFF";
+                    String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
                     client.player.sendMessage(net.minecraft.text.Text.of(message), true);
                 }
             }
