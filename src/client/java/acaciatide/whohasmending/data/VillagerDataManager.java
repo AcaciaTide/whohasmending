@@ -59,6 +59,11 @@ public class VillagerDataManager {
      * ワールドまたはサーバーから離脱した時に呼び出す
      */
     public void onWorldLeave() {
+        if (currentWorldId != null && !villagerData.isEmpty()) {
+            // ワールド離脱時にバックアップを作成
+            VillagerDataStorage.createManualBackup(currentWorldId);
+        }
+        
         if (currentWorldId != null && isDirty) {
             saveCurrentWorld();
         }
@@ -136,6 +141,75 @@ public class VillagerDataManager {
     }
 
     /**
+     * バックアップからデータを復元
+     * @return 復元に成功した場合true
+     */
+    public boolean restoreFromBackup() {
+        if (currentWorldId == null) {
+            Whohasmending.LOGGER.warn("Cannot restore: not in a world");
+            return false;
+        }
+        
+        Map<UUID, VillagerTradeData> restored = VillagerDataStorage.restoreFromBackup(currentWorldId);
+        
+        if (!restored.isEmpty()) {
+            this.villagerData = restored;
+            this.isDirty = true;
+            saveCurrentWorld();
+            Whohasmending.LOGGER.info("Restored {} villager records from backup", restored.size());
+            return true;
+        }
+        
+        Whohasmending.LOGGER.warn("No backup data found to restore");
+        return false;
+    }
+
+    /**
+     * 手動でバックアップを作成
+     */
+    public void createManualBackup() {
+        if (currentWorldId == null) {
+            Whohasmending.LOGGER.warn("Cannot create backup: not in a world");
+            return;
+        }
+        
+        // 現在のデータを保存してからバックアップ
+        if (isDirty) {
+            saveCurrentWorld();
+        }
+        
+        VillagerDataStorage.createManualBackup(currentWorldId);
+    }
+
+    /**
+     * 現在のデータをバリデーション
+     * @return バリデーション結果
+     */
+    public ValidationResult validateData() {
+        if (villagerData.isEmpty()) {
+            return ValidationResult.empty();
+        }
+        
+        int totalRecords = villagerData.size();
+        int validRecords = 0;
+        int invalidRecords = 0;
+        
+        for (VillagerTradeData data : villagerData.values()) {
+            if (data.isValid()) {
+                validRecords++;
+            } else {
+                invalidRecords++;
+            }
+        }
+        
+        if (invalidRecords == 0) {
+            return ValidationResult.success(totalRecords);
+        } else {
+            return ValidationResult.partial(totalRecords, validRecords, invalidRecords);
+        }
+    }
+
+    /**
      * 全村人データを取得（レンダリング用）
      */
     public Map<UUID, VillagerTradeData> getAllVillagerData() {
@@ -189,5 +263,12 @@ public class VillagerDataManager {
      */
     public int getRecordCount() {
         return villagerData.size();
+    }
+
+    /**
+     * 現在のワールドIDを取得
+     */
+    public String getCurrentWorldId() {
+        return currentWorldId;
     }
 }

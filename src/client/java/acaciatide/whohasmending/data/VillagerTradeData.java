@@ -71,4 +71,49 @@ public class VillagerTradeData {
     public void clearTrades() {
         this.trades.clear();
     }
+
+    /**
+     * 取引リストを取得
+     */
+    public List<TradeEntry> getTrades() {
+        return trades;
+    }
+
+    /**
+     * データが有効かどうかを検証
+     * @return 有効な場合true
+     */
+    public boolean isValid() {
+        if (villagerUuid == null) return false;
+        if (trades == null) return false;
+        
+        // 各取引エントリをチェック
+        for (TradeEntry trade : trades) {
+            if (trade == null || !trade.isValid()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 不正な値を有効な範囲に修正
+     */
+    public void sanitize() {
+        // nullリストを空リストに
+        if (trades == null) {
+            trades = new ArrayList<>();
+        }
+        
+        // 無効なエントリを除去し、有効なものをサニタイズ
+        List<TradeEntry> validTrades = new ArrayList<>();
+        for (TradeEntry trade : trades) {
+            if (trade != null) {
+                trade.sanitize();
+                validTrades.add(trade);
+            }
+        }
+        trades = validTrades;
+    }
 }
+

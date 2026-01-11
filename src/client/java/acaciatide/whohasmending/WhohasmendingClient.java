@@ -101,15 +101,63 @@ public class WhohasmendingClient implements ClientModInitializer {
                         return 1;
                     })
                 )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("restore")
+                    .executes(context -> {
+                        boolean success = VillagerDataManager.getInstance().restoreFromBackup();
+                        String message = success 
+                            ? "§a[WhoHasMending] Data restored from backup successfully."
+                            : "§c[WhoHasMending] Failed to restore: no backup found.";
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(message));
+                        return success ? 1 : 0;
+                    })
+                )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("backup")
+                    .executes(context -> {
+                        VillagerDataManager.getInstance().createManualBackup();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§a[WhoHasMending] Backup created successfully."));
+                        return 1;
+                    })
+                )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("validate")
+                    .executes(context -> {
+                        acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(result.getMessage()));
+                        return result.isValid() ? 1 : 0;
+                    })
+                )
             );
 
-            // ショートカット: /whm reset
+            // ショートカット: /whm サブコマンド
             dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("whm")
                 .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("reset")
                     .executes(context -> {
                         VillagerDataManager.getInstance().clearCurrentWorldData();
                         context.getSource().sendFeedback(net.minecraft.text.Text.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
                         return 1;
+                    })
+                )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("restore")
+                    .executes(context -> {
+                        boolean success = VillagerDataManager.getInstance().restoreFromBackup();
+                        String message = success 
+                            ? "§a[WhoHasMending] Data restored from backup successfully."
+                            : "§c[WhoHasMending] Failed to restore: no backup found.";
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(message));
+                        return success ? 1 : 0;
+                    })
+                )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("backup")
+                    .executes(context -> {
+                        VillagerDataManager.getInstance().createManualBackup();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§a[WhoHasMending] Backup created successfully."));
+                        return 1;
+                    })
+                )
+                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("validate")
+                    .executes(context -> {
+                        acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
+                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(result.getMessage()));
+                        return result.isValid() ? 1 : 0;
                     })
                 )
             );

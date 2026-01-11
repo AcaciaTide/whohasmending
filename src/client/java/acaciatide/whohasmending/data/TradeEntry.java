@@ -87,4 +87,42 @@ public class TradeEntry {
         String[] romans = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
         return romans[num];
     }
+
+    /**
+     * データが有効かどうかを検証
+     * @return 有効な場合true
+     */
+    public boolean isValid() {
+        // エメラルドコストは1-64の範囲
+        if (emeraldCost < 1 || emeraldCost > 64) {
+            return false;
+        }
+        
+        // エンチャント名がある場合、レベルは1-255の範囲
+        if (enchantmentName != null && !enchantmentName.isEmpty()) {
+            if (enchantmentLevel < 1 || enchantmentLevel > 255) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * 不正な値を有効な範囲に修正
+     */
+    public void sanitize() {
+        // コストを有効範囲にクランプ
+        if (emeraldCost < 1) emeraldCost = 1;
+        if (emeraldCost > 64) emeraldCost = 64;
+        
+        // レベルを有効範囲にクランプ
+        if (enchantmentLevel < 1) enchantmentLevel = 1;
+        if (enchantmentLevel > 255) enchantmentLevel = 255;
+        
+        // 極端に長い文字列をトリム
+        if (enchantmentName != null && enchantmentName.length() > 100) {
+            enchantmentName = enchantmentName.substring(0, 100);
+        }
+    }
 }
