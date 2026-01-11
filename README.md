@@ -18,7 +18,7 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 
 1.  Install **Fabric Loader**.
 2.  Install **Fabric API**.
-3.  Download `whohasmending-x.x.x.jar` and place it in your `mods` folder.
+3.  Download `whohasmending-MCversion-x.x.x.jar` and place it in your `mods` folder.
 
 ## How to Use
 
@@ -30,6 +30,9 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 ### Controls
 *   **Toggle Display**: Default is **Unbound**. Go to `Options > Controls > Key Binds > Miscellaneous > Toggle Villager Trade Display` to assign a key (e.g., 'H').
 *   **Reset Data**: Use `/whohasmending reset` (or `/whm reset`) to clear all saved data for the current world.
+*   **Backup Data**: Use `/whm backup` to manually create a backup of the current trade data.
+*   **Restore Data**: Use `/whm restore` to restore trade data from the latest backup.
+*   **Validate Data**: Use `/whm validate` to check for and fix any data corruption.
 
 ## Compatibility
 *   **Client-Side Only**: Works on servers without needing to be installed on the server. Of course, it also works in singleplayer.
