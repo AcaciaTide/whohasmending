@@ -30,13 +30,13 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 ### Controls
 *   **Toggle Display**: Default is **Unbound**. Go to `Options > Controls > Key Binds > Miscellaneous > Toggle Villager Trade Display` to assign a key (e.g., 'H').
 *   **Reset Data**: Use `/whohasmending reset` (or `/whm reset`) to clear all saved data for the current world.
-*   **Backup Data**: Use `/whm backup` to manually create a backup of the current trade data.
+*   **Backup Data**: Use `/whm backup` to manually create a backup of the current world trade data.
 *   **Restore Data**: Use `/whm restore` to restore trade data from the latest backup.
 *   **Validate Data**: Use `/whm validate` to check for and fix any data corruption.
 
 ## Compatibility
 *   **Client-Side Only**: Works on servers without needing to be installed on the server. Of course, it also works in singleplayer.
-*   **Version Support**: Currently supports **Minecraft 1.21.11**. Backports to older versions may be considered if time permits.
+*   **Version Support**: Currently supports **Minecraft 1.21.9 - 1.21.11**. Backports to older versions may be considered if time permits.
 
 ## License
 MIT License. Feel free to use this in your modpacks!
