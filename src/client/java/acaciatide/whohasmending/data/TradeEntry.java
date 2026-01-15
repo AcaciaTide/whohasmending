@@ -55,7 +55,6 @@ public class TradeEntry {
 
     /**
      * 表示用テキストを生成
-     * 例: "修繕 [10e]" または "ダメージ増加V [64e]"
      */
     public String getDisplayText() {
         StringBuilder sb = new StringBuilder();

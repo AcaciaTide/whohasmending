@@ -22,7 +22,6 @@ public class VillagerTradeCapture {
 
     /**
      * TradeOfferListから取引情報をキャプチャして保存
-     * クライアント側で安全に使用可能
      * @param offers 取引オファーリスト
      * @param villagerUuid 村人のUUID
      * @param profession 村人の職業名
