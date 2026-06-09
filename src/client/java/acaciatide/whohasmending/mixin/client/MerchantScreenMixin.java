@@ -65,7 +65,7 @@ public abstract class MerchantScreenMixin {
     /**
      * 画面描画時にオファーをキャプチャ（最初の1回のみ）
      */
-    @Inject(method = "renderContents", at = @At("HEAD"))
+    @Inject(method = "extractContents", at = @At("HEAD"))
     private void onRenderMain(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
         // 既にキャプチャ済みの場合はスキップ
         if (whohasmending_captured) {
