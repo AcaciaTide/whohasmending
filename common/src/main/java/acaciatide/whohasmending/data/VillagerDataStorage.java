@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
 import com.google.gson.reflect.TypeToken;
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import acaciatide.whohasmending.Whohasmending;
 
 import java.io.IOException;
@@ -30,10 +30,12 @@ public class VillagerDataStorage {
             .setPrettyPrinting()
             .create();
     
-    private static final Path CONFIG_DIR = FabricLoader.getInstance()
-            .getConfigDir()
-            .resolve("whohasmending")
-            .resolve("data");
+    private static Path getConfigDir() {
+        return Minecraft.getInstance().gameDirectory.toPath()
+                .resolve("config")
+                .resolve("whohasmending")
+                .resolve("data");
+    }
 
     private static final int MAX_BACKUPS = 3;
 
@@ -304,7 +306,7 @@ public class VillagerDataStorage {
     private static Path getFilePath(String worldId) {
         // ファイル名に使えない文字を置換
         String safeWorldId = worldId.replaceAll("[^a-zA-Z0-9._-]", "_");
-        return CONFIG_DIR.resolve(safeWorldId + ".json");
+        return getConfigDir().resolve(safeWorldId + ".json");
     }
 
     /**
@@ -312,7 +314,7 @@ public class VillagerDataStorage {
      */
     public static void ensureDirectoryExists() {
         try {
-            Files.createDirectories(CONFIG_DIR);
+            Files.createDirectories(getConfigDir());
         } catch (IOException e) {
             Whohasmending.LOGGER.error("Failed to create config directory", e);
         }

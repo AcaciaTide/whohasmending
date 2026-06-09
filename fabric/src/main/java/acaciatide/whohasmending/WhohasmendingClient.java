@@ -18,8 +18,7 @@ import org.lwjgl.glfw.GLFW;
  */
 public class WhohasmendingClient implements ClientModInitializer {
     
-    // キーバインド: 表示切り替え（Hキー）
-    private static KeyMapping toggleDisplayKey;
+
     
     // 前回のワールド状態
     private boolean wasInWorld = false;
@@ -27,9 +26,6 @@ public class WhohasmendingClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Whohasmending.LOGGER.info("Initializing Who Has Mending client...");
-        
-        // データディレクトリの初期化
-        VillagerDataStorage.ensureDirectoryExists();
         
         // キーバインドの登録
         registerKeyBindings();
@@ -48,7 +44,7 @@ public class WhohasmendingClient implements ClientModInitializer {
      */
     private void registerKeyBindings() {
         // MISCカテゴリにキーバインドを登録
-        toggleDisplayKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        Whohasmending.toggleDisplayKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.whohasmending.toggle_display",
                 com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
@@ -65,7 +61,7 @@ public class WhohasmendingClient implements ClientModInitializer {
         // クライアントティックイベント（キーバインド処理 & ワールド状態監視）
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // キーバインドの処理
-            while (toggleDisplayKey.consumeClick()) {
+            while (Whohasmending.toggleDisplayKey.consumeClick()) {
                 VillagerDataManager.getInstance().toggleDisplay();
                 
                 // フィードバックメッセージ
