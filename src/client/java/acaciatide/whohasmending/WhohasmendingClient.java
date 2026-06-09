@@ -2,14 +2,16 @@ package acaciatide.whohasmending;
 
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerDataStorage;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Who Has Mending クライアントエントリーポイント
@@ -17,7 +19,7 @@ import net.minecraft.client.util.InputUtil;
 public class WhohasmendingClient implements ClientModInitializer {
     
     // キーバインド: 表示切り替え（Hキー）
-    private static KeyBinding toggleDisplayKey;
+    private static KeyMapping toggleDisplayKey;
     
     // 前回のワールド状態
     private boolean wasInWorld = false;
@@ -46,11 +48,11 @@ public class WhohasmendingClient implements ClientModInitializer {
      */
     private void registerKeyBindings() {
         // MISCカテゴリにキーバインドを登録
-        toggleDisplayKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        toggleDisplayKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.whohasmending.toggle_display",
-                InputUtil.Type.KEYSYM,
-                InputUtil.UNKNOWN_KEY.getCode(),
-                KeyBinding.Category.MISC
+                com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+                GLFW.GLFW_KEY_H,
+                KeyMapping.Category.MISC
         ));
         
         Whohasmending.LOGGER.info("Registered key binding for toggle display");
@@ -63,14 +65,14 @@ public class WhohasmendingClient implements ClientModInitializer {
         // クライアントティックイベント（キーバインド処理 & ワールド状態監視）
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // キーバインドの処理
-            while (toggleDisplayKey.wasPressed()) {
+            while (toggleDisplayKey.consumeClick()) {
                 VillagerDataManager.getInstance().toggleDisplay();
                 
                 // フィードバックメッセージ
                 boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                 if (client.player != null) {
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
-                    client.player.sendMessage(net.minecraft.text.Text.of(message), true);
+                    client.gui.setOverlayMessage(Component.literal(message), false);
                 }
             }
             
@@ -91,72 +93,72 @@ public class WhohasmendingClient implements ClientModInitializer {
      * コマンドを登録
      */
     private void registerCommands() {
-        net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             // /whohasmending reset
-            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("whohasmending")
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("reset")
+            dispatcher.register(ClientCommands.literal("whohasmending")
+                .then(ClientCommands.literal("reset")
                     .executes(context -> {
                         VillagerDataManager.getInstance().clearCurrentWorldData();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
+                        context.getSource().sendFeedback(Component.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
                         return 1;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("restore")
+                .then(ClientCommands.literal("restore")
                     .executes(context -> {
                         boolean success = VillagerDataManager.getInstance().restoreFromBackup();
                         String message = success 
                             ? "§a[WhoHasMending] Data restored from backup successfully."
                             : "§c[WhoHasMending] Failed to restore: no backup found.";
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(message));
+                        context.getSource().sendFeedback(Component.literal(message));
                         return success ? 1 : 0;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("backup")
+                .then(ClientCommands.literal("backup")
                     .executes(context -> {
                         VillagerDataManager.getInstance().createManualBackup();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§a[WhoHasMending] Backup created successfully."));
+                        context.getSource().sendFeedback(Component.literal("§a[WhoHasMending] Backup created successfully."));
                         return 1;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("validate")
+                .then(ClientCommands.literal("validate")
                     .executes(context -> {
                         acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(result.getMessage()));
+                        context.getSource().sendFeedback(Component.literal(result.getMessage()));
                         return result.isValid() ? 1 : 0;
                     })
                 )
             );
 
             // ショートカット: /whm サブコマンド
-            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("whm")
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("reset")
+            dispatcher.register(ClientCommands.literal("whm")
+                .then(ClientCommands.literal("reset")
                     .executes(context -> {
                         VillagerDataManager.getInstance().clearCurrentWorldData();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
+                        context.getSource().sendFeedback(Component.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
                         return 1;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("restore")
+                .then(ClientCommands.literal("restore")
                     .executes(context -> {
                         boolean success = VillagerDataManager.getInstance().restoreFromBackup();
                         String message = success 
                             ? "§a[WhoHasMending] Data restored from backup successfully."
                             : "§c[WhoHasMending] Failed to restore: no backup found.";
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(message));
+                        context.getSource().sendFeedback(Component.literal(message));
                         return success ? 1 : 0;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("backup")
+                .then(ClientCommands.literal("backup")
                     .executes(context -> {
                         VillagerDataManager.getInstance().createManualBackup();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal("§a[WhoHasMending] Backup created successfully."));
+                        context.getSource().sendFeedback(Component.literal("§a[WhoHasMending] Backup created successfully."));
                         return 1;
                     })
                 )
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("validate")
+                .then(ClientCommands.literal("validate")
                     .executes(context -> {
                         acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
-                        context.getSource().sendFeedback(net.minecraft.text.Text.literal(result.getMessage()));
+                        context.getSource().sendFeedback(Component.literal(result.getMessage()));
                         return result.isValid() ? 1 : 0;
                     })
                 )
@@ -167,8 +169,8 @@ public class WhohasmendingClient implements ClientModInitializer {
     /**
      * ワールド状態の変化を検出して処理
      */
-    private void handleWorldStateChange(MinecraftClient client) {
-        boolean inWorld = client.world != null && client.player != null;
+    private void handleWorldStateChange(Minecraft client) {
+        boolean inWorld = client.level != null && client.player != null;
         
         if (inWorld && !wasInWorld) {
             // ワールドに参加した

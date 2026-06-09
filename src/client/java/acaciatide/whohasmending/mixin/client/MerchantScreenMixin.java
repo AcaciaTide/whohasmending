@@ -2,18 +2,6 @@ package acaciatide.whohasmending.mixin.client;
 
 import acaciatide.whohasmending.Whohasmending;
 import acaciatide.whohasmending.capture.VillagerTradeCapture;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.MerchantScreen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.screen.MerchantScreenHandler;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.village.VillagerProfession;
-import net.minecraft.village.TradeOfferList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,6 +9,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.MerchantScreen;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.inventory.MerchantMenu;
+import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 /**
  * MerchantScreenにフックして取引情報をキャプチャするMixin
@@ -34,7 +33,7 @@ public abstract class MerchantScreenMixin {
 
     // 対象の村人を保持
     @Unique
-    private VillagerEntity whohasmending_targetVillager = null;
+    private Villager whohasmending_targetVillager = null;
 
     /**
      * 取引画面の初期化時に村人を特定
@@ -45,17 +44,17 @@ public abstract class MerchantScreenMixin {
         whohasmending_targetVillager = null;
         
         try {
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player == null || client.world == null) {
+            Minecraft client = Minecraft.getInstance();
+            if (client.player == null || client.level == null) {
                 return;
             }
 
             // 対話中の村人を探す
             Entity targetEntity = findInteractingVillager(client);
             
-            if (targetEntity instanceof VillagerEntity villager) {
+            if (targetEntity instanceof Villager villager) {
                 whohasmending_targetVillager = villager;
-                Whohasmending.LOGGER.info("MerchantScreen.init() - Found villager: {}", villager.getUuid());
+                Whohasmending.LOGGER.info("MerchantScreen.init() - Found villager: {}", villager.getUUID());
             }
             
         } catch (Exception e) {
@@ -66,8 +65,8 @@ public abstract class MerchantScreenMixin {
     /**
      * 画面描画時にオファーをキャプチャ（最初の1回のみ）
      */
-    @Inject(method = "renderMain", at = @At("HEAD"))
-    private void onRenderMain(DrawContext context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+    @Inject(method = "renderContents", at = @At("HEAD"))
+    private void onRenderMain(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
         // 既にキャプチャ済みの場合はスキップ
         if (whohasmending_captured) {
             return;
@@ -75,13 +74,13 @@ public abstract class MerchantScreenMixin {
 
         try {
             MerchantScreen screen = (MerchantScreen) (Object) this;
-            MerchantScreenHandler handler = screen.getScreenHandler();
+            MerchantMenu handler = screen.getMenu();
             
             if (handler == null) {
                 return;
             }
 
-            TradeOfferList offers = handler.getRecipes();
+            MerchantOffers offers = handler.getOffers();
             
             // オファーがまだ空の場合は次のフレームで再試行
             if (offers == null || offers.isEmpty()) {
@@ -91,11 +90,11 @@ public abstract class MerchantScreenMixin {
             Whohasmending.LOGGER.info("renderMain - {} offers available, capturing...", offers.size());
 
             if (whohasmending_targetVillager != null) {
-                UUID villagerUuid = whohasmending_targetVillager.getUuid();
+                UUID villagerUuid = whohasmending_targetVillager.getUUID();
                 
                 // 職業IDを取得
-                String professionId = whohasmending_targetVillager.getVillagerData().profession().getKey()
-                        .map(k -> k.getValue().getPath())
+                String professionId = whohasmending_targetVillager.getVillagerData().profession().unwrapKey()
+                        .map(k -> k.identifier().getPath())
                         .orElse("none");
 
                 // 司書以外は記録しない
@@ -114,15 +113,15 @@ public abstract class MerchantScreenMixin {
                 
             } else {
                 // フォールバック: 改めて村人を探す
-                MinecraftClient client = MinecraftClient.getInstance();
+                Minecraft client = Minecraft.getInstance();
                 Entity targetEntity = findInteractingVillager(client);
                 
-                if (targetEntity instanceof VillagerEntity villager) {
-                    UUID villagerUuid = villager.getUuid();
+                if (targetEntity instanceof Villager villager) {
+                    UUID villagerUuid = villager.getUUID();
                     
                     // 職業IDを取得
-                    String professionId = villager.getVillagerData().profession().getKey()
-                            .map(k -> k.getValue().getPath())
+                    String professionId = villager.getVillagerData().profession().unwrapKey()
+                            .map(k -> k.identifier().getPath())
                             .orElse("none");
 
                     // 司書以外は記録しない
@@ -149,23 +148,23 @@ public abstract class MerchantScreenMixin {
      * 現在対話中の村人を探す
      */
     @Unique
-    private Entity findInteractingVillager(MinecraftClient client) {
+    private Entity findInteractingVillager(Minecraft client) {
         // クロスヘアのEntityHitResultから取得を試みる
-        if (client.crosshairTarget != null && client.crosshairTarget.getType() == HitResult.Type.ENTITY) {
-            EntityHitResult entityHit = (EntityHitResult) client.crosshairTarget;
+        if (client.hitResult != null && client.hitResult.getType() == HitResult.Type.ENTITY) {
+            EntityHitResult entityHit = (EntityHitResult) client.hitResult;
             Entity entity = entityHit.getEntity();
-            if (entity instanceof VillagerEntity) {
+            if (entity instanceof Villager) {
                 return entity;
             }
         }
 
         // フォールバック: プレイヤーの近くにいる村人を検索
-        if (client.player != null && client.world != null) {
+        if (client.player != null && client.level != null) {
             double searchRadius = 5.0;
-            return client.world.getEntitiesByClass(
-                    VillagerEntity.class,
-                    client.player.getBoundingBox().expand(searchRadius),
-                    villager -> villager.getCustomer() == client.player
+            return client.level.getEntitiesOfClass(
+                    Villager.class,
+                    client.player.getBoundingBox().inflate(searchRadius),
+                    villager -> villager.getTradingPlayer() == client.player
             ).stream().findFirst().orElse(null);
         }
 
@@ -176,9 +175,9 @@ public abstract class MerchantScreenMixin {
      * 職業の表示名を取得
      */
     @Unique
-    private String getProfessionDisplayName(RegistryEntry<VillagerProfession> profession) {
+    private String getProfessionDisplayName(Holder<VillagerProfession> profession) {
         // 現在の言語設定に従って翻訳された名前を取得
-        return net.minecraft.text.Text.translatable("entity.minecraft.villager." + 
-                profession.getKey().map(k -> k.getValue().getPath()).orElse("none")).getString();
+        return net.minecraft.network.chat.Component.translatable("entity.minecraft.villager." + 
+                profession.unwrapKey().map(k -> k.identifier().getPath()).orElse("none")).getString();
     }
 }

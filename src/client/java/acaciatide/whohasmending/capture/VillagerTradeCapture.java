@@ -4,16 +4,15 @@ import acaciatide.whohasmending.Whohasmending;
 import acaciatide.whohasmending.data.TradeEntry;
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerTradeData;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOfferList;
-
 import java.util.UUID;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 
 /**
  * 取引画面から村人の取引情報を抽出するクラス
@@ -26,7 +25,7 @@ public class VillagerTradeCapture {
      * @param villagerUuid 村人のUUID
      * @param profession 村人の職業名
      */
-    public static void captureFromOffers(TradeOfferList offers, UUID villagerUuid, String profession) {
+    public static void captureFromOffers(MerchantOffers offers, UUID villagerUuid, String profession) {
         if (offers == null || villagerUuid == null) {
             Whohasmending.LOGGER.warn("Cannot capture: offers or UUID is null");
             return;
@@ -39,7 +38,7 @@ public class VillagerTradeCapture {
 
         VillagerTradeData data = new VillagerTradeData(villagerUuid, profession);
         
-        for (TradeOffer offer : offers) {
+        for (MerchantOffer offer : offers) {
             TradeEntry entry = extractTradeEntry(offer);
             if (entry != null) {
                 data.addTrade(entry);
@@ -58,24 +57,24 @@ public class VillagerTradeCapture {
     /**
      * TradeOfferからTradeEntryを抽出
      */
-    private static TradeEntry extractTradeEntry(TradeOffer offer) {
-        ItemStack sellItem = offer.getSellItem();
+    private static TradeEntry extractTradeEntry(MerchantOffer offer) {
+        ItemStack sellItem = offer.getResult();
 
         // エンチャント本以外は無視（記録しない）
-        if (!sellItem.isOf(Items.ENCHANTED_BOOK)) {
+        if (!sellItem.is(Items.ENCHANTED_BOOK)) {
             return null;
         }
 
-        ItemStack buyItem = offer.getDisplayedFirstBuyItem();
+        ItemStack buyItem = offer.getCostA();
         
-        String itemName = sellItem.getName().getString();
+        String itemName = sellItem.getHoverName().getString();
         String enchantmentName = null;
         int enchantmentLevel = 0;
         int emeraldCost = buyItem.getCount();
         // エンチャント情報を抽出
-        ItemEnchantmentsComponent enchantments = EnchantmentHelper.getEnchantments(sellItem);
+        ItemEnchantments enchantments = EnchantmentHelper.getEnchantmentsForCrafting(sellItem);
         
-        for (var entry : enchantments.getEnchantmentEntries()) {
+        for (var entry : enchantments.entrySet()) {
             var enchantment = entry.getKey();
             int level = entry.getIntValue();
             
@@ -93,7 +92,7 @@ public class VillagerTradeCapture {
     /**
      * エンチャントの基本名を抽出（レベル表記なし）
      */
-    private static String extractEnchantmentBaseName(RegistryEntry<Enchantment> enchantment) {
+    private static String extractEnchantmentBaseName(Holder<Enchantment> enchantment) {
         // 現在の言語設定に従って翻訳された名前を取得
         return enchantment.value().description().getString();
     }

@@ -1,13 +1,13 @@
 package acaciatide.whohasmending.data;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.server.integrated.IntegratedServer;
 import acaciatide.whohasmending.Whohasmending;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.server.IntegratedServer;
 
 /**
  * 村人取引データのメモリキャッシュを管理
@@ -235,23 +235,23 @@ public class VillagerDataManager {
      * 現在のワールド/サーバーの識別子を取得
      */
     private String getWorldIdentifier() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         
         // シングルプレイの場合
-        IntegratedServer integratedServer = client.getServer();
+        IntegratedServer integratedServer = client.getSingleplayerServer();
         if (integratedServer != null) {
-            String worldName = integratedServer.getSaveProperties().getLevelName();
+            String worldName = integratedServer.getWorldData().getLevelName();
             return "world_" + worldName;
         }
         
         // マルチプレイの場合
-        ServerInfo serverInfo = client.getCurrentServerEntry();
+        ServerData serverInfo = client.getCurrentServer();
         if (serverInfo != null) {
-            return "server_" + serverInfo.address;
+            return "server_" + serverInfo.ip;
         }
         
         // フォールバック
-        if (client.world != null) {
+        if (client.level != null) {
             return "unknown_" + System.currentTimeMillis();
         }
         
