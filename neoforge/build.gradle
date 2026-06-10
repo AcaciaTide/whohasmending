@@ -54,4 +54,7 @@ processResources {
 
 tasks.named('jar') {
     archiveFileName = "whohasmending-neoforge-${project.version}-${minecraft_version}.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // 共通モジュールのクラスとリソースを同梱する
+    from project(":common").sourceSets.main.output
 }

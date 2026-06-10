@@ -48,6 +48,9 @@ processResources {
 
 tasks.matching { it.name == 'jar' }.configureEach {
     archiveFileName = "whohasmending-fabric-${project.version}-${minecraft_version}.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // 共通モジュールのクラスとリソースを同梱する
+    from project(":common").sourceSets.main.output
 }
 
 tasks.matching { it.name == 'remapJar' }.configureEach {
