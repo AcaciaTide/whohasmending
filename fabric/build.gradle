@@ -36,6 +36,15 @@ tasks.withType(JavaCompile).configureEach {
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
+    // ソースJar生成タスクを有効化する
+    withSourcesJar()
+}
+
+// 共通モジュールのソースコードをソースJarに同梱する
+tasks.matching { it.name == 'sourcesJar' }.configureEach {
+    archiveFileName = "whohasmending-fabric-${project.version}-${minecraft_version}-sources.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from project(":common").sourceSets.main.allSource
 }
 
 processResources {
