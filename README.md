@@ -16,9 +16,14 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 
 ## Installation
 
+### Fabric
 1.  Install **Fabric Loader**.
 2.  Install **Fabric API**.
-3.  Download `whohasmending-MCversion-x.x.x.jar` and place it in your `mods` folder.
+3.  Download `whohasmending-fabric-x.x.x-MCversion.jar` and place it in your `mods` folder.
+
+### NeoForge
+1.  Install **NeoForge**.
+2.  Download `whohasmending-neoforge-x.x.x-MCversion.jar` and place it in your `mods` folder. (No other dependencies are required)
 
 ## How to Use
 
@@ -36,7 +41,7 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
 
 ## Compatibility
 *   **Client-Side Only**: Works on servers without needing to be installed on the server. Of course, it also works in singleplayer.
-*   **Version Support**: Currently supports **Minecraft 1.21.9 - 1.21.11**. Backports to older versions may be considered if time permits.
+*   **Version Support**: Currently supports **Minecraft 26.1 and 26.1.x** on both **Fabric** and **NeoForge**.
 
 ## License
 MIT License. Feel free to use this in your modpacks!
