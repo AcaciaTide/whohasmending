@@ -51,3 +51,7 @@ processResources {
         expand replaceProperties
     }
 }
+
+tasks.named('jar') {
+    archiveFileName = "whohasmending-neoforge-${project.version}-${minecraft_version}.jar"
+}
