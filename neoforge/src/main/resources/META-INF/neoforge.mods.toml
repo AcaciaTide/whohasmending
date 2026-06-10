@@ -8,6 +8,8 @@ version = "${version}"
 displayName = "${mod_name}"
 authors = "${mod_author}"
 description = "${mod_description}"
+# Modのロゴ画像を指定する
+logoFile = "icon.png"
 
 [[dependencies.whohasmending]]
 modId = "neoforge"
