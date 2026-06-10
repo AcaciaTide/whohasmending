@@ -10,6 +10,16 @@ dependencies {
     implementation project(':common')
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                project(':common').file('src/main/resources')
+            ]
+        }
+    }
+}
+
 loom {
     runs {
         client {
