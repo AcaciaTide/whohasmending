@@ -12,7 +12,7 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
     *   **Librarians Only**: Only tracks Librarians, ignoring farmers or clerics.
     *   **Empty Trade Hiding**: If a Librarian has no enchanted books, no nameplate is shown.
 *   **Data Persistence**: Trade data is saved per world/server. Your records won't disappear!
-*   **Customizable**: Toggle display with a keybind (Default: Unbound, set it in Controls).
+*   **Customizable**: Toggle display with a keybind (Default: 'H', customizable in Controls).
 
 ## Installation
 
@@ -33,7 +33,7 @@ A client-side utility mod that visualizes villager trades (only enchanted books)
     *   Example: `[10]Mending` or `[30]Sharpness V`
 
 ### Controls
-*   **Toggle Display**: Default is **Unbound**. Go to `Options > Controls > Key Binds > Miscellaneous > Toggle Villager Trade Display` to assign a key (e.g., 'H').
+*   **Toggle Display**: Default is **H**. Go to `Options > Controls > Key Binds > Miscellaneous > Toggle Villager Trade Display` to change the key binding if needed.
 *   **Reset Data**: Use `/whohasmending reset` (or `/whm reset`) to clear all saved data for the current world.
 *   **Backup Data**: Use `/whm backup` to manually create a backup of the current world trade data.
 *   **Restore Data**: Use `/whm restore` to restore trade data from the latest backup.
