@@ -68,7 +68,7 @@ public class WhohasmendingClient implements ClientModInitializer {
                 boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                 if (client.player != null) {
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
-                    client.gui.setOverlayMessage(Component.literal(message), false);
+                    client.gui.hud.setOverlayMessage(Component.literal(message), false);
                 }
             }
             

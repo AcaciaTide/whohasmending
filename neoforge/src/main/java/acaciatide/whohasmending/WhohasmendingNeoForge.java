@@ -56,7 +56,7 @@ public class WhohasmendingNeoForge {
                     VillagerDataManager.getInstance().toggleDisplay();
                     boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
-                    client.gui.setOverlayMessage(Component.literal(message), false);
+                    client.gui.hud.setOverlayMessage(Component.literal(message), false);
                 }
             }
         }
