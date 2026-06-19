@@ -2,6 +2,7 @@ package acaciatide.whohasmending.mixin.client;
 
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerTradeData;
+import java.util.UUID;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -32,13 +33,27 @@ public abstract class LivingEntityRendererMixin {
 
         VillagerTradeData data = VillagerDataManager.getInstance().getVillagerData(villager.getUUID());
         if (data != null && data.getDisplayName() != null && !data.getDisplayName().isEmpty()) {
-            Component tradeText = Component.nullToEmpty(data.getDisplayName());
-            
-            // 既存の名前があれば "既存の名前 トレード内容" にする
-            if (state.nameTag != null) {
-                state.nameTag = Component.empty().append(state.nameTag).append(" ").append(tradeText);
+            UUID uuid = villager.getUUID();
+            VillagerDataManager.CachedTag cached = VillagerDataManager.getInstance().getCachedTag(uuid);
+            Component baseTag = state.nameTag;
+            String displayName = data.getDisplayName();
+
+            // キャッシュが存在し、ベースの名前タグと取引テキストが一致しているか判定
+            if (cached != null && 
+                ((baseTag == null && cached.baseTag == null) || (baseTag != null && baseTag.equals(cached.baseTag))) && 
+                displayName.equals(cached.displayName)) {
+                state.nameTag = cached.resultTag;
             } else {
-                state.nameTag = tradeText;
+                // 一致しない場合は新しくComponentを生成してキャッシュに保存
+                Component tradeText = Component.nullToEmpty(displayName);
+                Component resultTag;
+                if (baseTag != null) {
+                    resultTag = Component.empty().append(baseTag).append(" ").append(tradeText);
+                } else {
+                    resultTag = tradeText;
+                }
+                VillagerDataManager.getInstance().putCachedTag(uuid, new VillagerDataManager.CachedTag(baseTag, displayName, resultTag));
+                state.nameTag = resultTag;
             }
             
             // 重要: 名前表示位置(nameLabelPos)がnullの場合、計算して設定する

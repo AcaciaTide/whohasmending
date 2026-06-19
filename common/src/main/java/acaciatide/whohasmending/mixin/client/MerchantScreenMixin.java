@@ -1,6 +1,7 @@
 package acaciatide.whohasmending.mixin.client;
 
 import acaciatide.whohasmending.Whohasmending;
+import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.capture.VillagerTradeCapture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

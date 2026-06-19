@@ -1,6 +1,7 @@
 package acaciatide.whohasmending.data;
 
 import acaciatide.whohasmending.Whohasmending;
+import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +17,14 @@ public class VillagerDataManager {
     private static VillagerDataManager instance;
     
     private Map<UUID, VillagerTradeData> villagerData;
+    private Map<UUID, CachedTag> cachedTags;
     private String currentWorldId;
     private boolean displayEnabled;
     private boolean isDirty;
 
     private VillagerDataManager() {
         this.villagerData = new HashMap<>();
+        this.cachedTags = new HashMap<>();
         this.displayEnabled = true;
         this.isDirty = false;
     }
@@ -69,6 +72,7 @@ public class VillagerDataManager {
         }
         
         this.villagerData.clear();
+        this.cachedTags.clear();
         this.currentWorldId = null;
         this.isDirty = false;
         
@@ -107,9 +111,6 @@ public class VillagerDataManager {
     public void putVillagerData(UUID villagerUuid, VillagerTradeData data) {
         villagerData.put(villagerUuid, data);
         isDirty = true;
-        
-        // 毎回の更新で保存（MVP版ではシンプルに即時保存）
-        saveCurrentWorld();
     }
 
     /**
@@ -270,5 +271,26 @@ public class VillagerDataManager {
      */
     public String getCurrentWorldId() {
         return currentWorldId;
+    }
+
+    // レンダリング用のキャッシュ関連処理とクラス定義
+    public CachedTag getCachedTag(UUID uuid) {
+        return cachedTags.get(uuid);
+    }
+
+    public void putCachedTag(UUID uuid, CachedTag cachedTag) {
+        cachedTags.put(uuid, cachedTag);
+    }
+
+    public static class CachedTag {
+        public final Component baseTag;
+        public final String displayName;
+        public final Component resultTag;
+
+        public CachedTag(Component baseTag, String displayName, Component resultTag) {
+            this.baseTag = baseTag;
+            this.displayName = displayName;
+            this.resultTag = resultTag;
+        }
     }
 }
