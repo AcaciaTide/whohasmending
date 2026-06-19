@@ -1,7 +1,6 @@
 package acaciatide.whohasmending;
 
 import acaciatide.whohasmending.data.VillagerDataManager;
-import acaciatide.whohasmending.data.VillagerDataStorage;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

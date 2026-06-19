@@ -4,7 +4,6 @@ import acaciatide.whohasmending.Whohasmending;
 import acaciatide.whohasmending.data.TradeEntry;
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerTradeData;
-import java.util.UUID;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -13,6 +12,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
+
+import java.util.UUID;
 
 /**
  * 取引画面から村人の取引情報を抽出するクラス

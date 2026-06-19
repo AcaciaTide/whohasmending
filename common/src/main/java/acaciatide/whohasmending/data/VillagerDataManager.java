@@ -1,14 +1,14 @@
 package acaciatide.whohasmending.data;
 
 import acaciatide.whohasmending.Whohasmending;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.server.IntegratedServer;
 
 /**
  * 村人取引データのメモリキャッシュを管理

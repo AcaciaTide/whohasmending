@@ -2,7 +2,6 @@ package acaciatide.whohasmending.mixin.client;
 
 import acaciatide.whohasmending.data.VillagerDataManager;
 import acaciatide.whohasmending.data.VillagerTradeData;
-import java.util.UUID;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.UUID;
 
 /**
  * LivingEntityRendererにフックして取引情報をネームタグとして設定するMixin
