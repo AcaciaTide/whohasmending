@@ -18,7 +18,7 @@ import org.lwjgl.glfw.GLFW;
 
 @Mod(Whohasmending.MOD_ID)
 public class WhohasmendingNeoForge {
-
+    public static KeyMapping toggleDisplayKey;
     public WhohasmendingNeoForge(IEventBus modEventBus) {
         Whohasmending.init();
 
@@ -33,13 +33,13 @@ public class WhohasmendingNeoForge {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-            Whohasmending.toggleDisplayKey = new KeyMapping(
+            toggleDisplayKey = new KeyMapping(
                     "key.whohasmending.toggle_display",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_H,
                     KeyMapping.CATEGORY_MISC
             );
-            event.register(Whohasmending.toggleDisplayKey);
+            event.register(toggleDisplayKey);
             Whohasmending.LOGGER.info("Registered key binding for toggle display (NeoForge)");
         }
     }
@@ -50,8 +50,8 @@ public class WhohasmendingNeoForge {
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
             Minecraft client = Minecraft.getInstance();
-            if (client.player != null && Whohasmending.toggleDisplayKey != null) {
-                while (Whohasmending.toggleDisplayKey.consumeClick()) {
+            if (client.player != null && toggleDisplayKey != null) {
+                while (toggleDisplayKey.consumeClick()) {
                     VillagerDataManager.getInstance().toggleDisplay();
                     boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";

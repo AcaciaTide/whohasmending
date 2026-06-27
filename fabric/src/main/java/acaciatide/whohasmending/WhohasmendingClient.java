@@ -19,6 +19,8 @@ public class WhohasmendingClient implements ClientModInitializer {
     
 
     
+    public static KeyMapping toggleDisplayKey;
+    
     // 前回のワールド状態
     private boolean wasInWorld = false;
 
@@ -43,7 +45,7 @@ public class WhohasmendingClient implements ClientModInitializer {
      */
     private void registerKeyBindings() {
         // MISCカテゴリにキーバインドを登録
-        Whohasmending.toggleDisplayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleDisplayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.whohasmending.toggle_display",
                 com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
@@ -60,7 +62,7 @@ public class WhohasmendingClient implements ClientModInitializer {
         // クライアントティックイベント（キーバインド処理 & ワールド状態監視）
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // キーバインドの処理
-            while (Whohasmending.toggleDisplayKey.consumeClick()) {
+            while (toggleDisplayKey.consumeClick()) {
                 VillagerDataManager.getInstance().toggleDisplay();
                 
                 // フィードバックメッセージ
