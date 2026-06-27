@@ -21,6 +21,10 @@ public class VillagerDataManager {
     private String currentWorldId;
     private boolean displayEnabled;
     private boolean isDirty;
+    
+    // 重複検索を回避するための一時キャッシュ
+    private UUID lastCheckedVillager;
+    private VillagerTradeData lastCheckedData;
 
     private VillagerDataManager() {
         this.villagerData = new HashMap<>();
@@ -75,6 +79,8 @@ public class VillagerDataManager {
         this.cachedTags.clear();
         this.currentWorldId = null;
         this.isDirty = false;
+        this.lastCheckedVillager = null;
+        this.lastCheckedData = null;
         
         Whohasmending.LOGGER.info("Left world, data cleared");
     }
@@ -102,7 +108,13 @@ public class VillagerDataManager {
      * 村人データを取得
      */
     public VillagerTradeData getVillagerData(UUID villagerUuid) {
-        return villagerData.get(villagerUuid);
+        if (villagerUuid != null && villagerUuid.equals(lastCheckedVillager)) {
+            return lastCheckedData;
+        }
+        VillagerTradeData data = villagerData.get(villagerUuid);
+        lastCheckedVillager = villagerUuid;
+        lastCheckedData = data;
+        return data;
     }
 
     /**

@@ -17,6 +17,7 @@ public abstract class MobRendererMixin<T extends Mob> {
     private void onShouldShowName(T livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (livingEntity instanceof Villager villager) {
             if (VillagerDataManager.getInstance().isDisplayEnabled()) {
+                // キャッシュ対応のgetVillagerDataを呼び出す
                 VillagerTradeData data = VillagerDataManager.getInstance().getVillagerData(villager.getUUID());
                 if (data != null && data.getDisplayName() != null && !data.getDisplayName().isEmpty()) {
                     cir.setReturnValue(true);
