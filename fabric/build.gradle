@@ -69,3 +69,7 @@ tasks.matching { it.name == 'jar' }.configureEach {
 tasks.matching { it.name == 'remapJar' }.configureEach {
     archiveFileName = "whohasmending-fabric-${project.version}-${minecraft_version}.jar"
 }
+
+tasks.matching { it.name == 'remapSourcesJar' }.configureEach {
+    archiveFileName = "whohasmending-fabric-${project.version}-${minecraft_version}-sources.jar"
+}
