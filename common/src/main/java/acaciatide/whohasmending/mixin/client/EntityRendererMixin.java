@@ -8,12 +8,17 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.Villager;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity> {
+    
+    @Shadow @Final protected EntityRenderDispatcher entityRenderDispatcher;
 
     @ModifyVariable(method = "renderNameTag", at = @At("HEAD"), argsOnly = true)
     private Component modifyNameTag(Component formattedName, T entity) {
@@ -22,7 +27,8 @@ public abstract class EntityRendererMixin<T extends Entity> {
                 VillagerTradeData data = VillagerDataManager.getInstance().getVillagerData(villager.getUUID());
                 if (data != null && data.getDisplayName() != null && !data.getDisplayName().isEmpty()) {
                     String displayName = data.getDisplayName();
-                    if (villager.hasCustomName() && formattedName != null) {
+                    boolean isLookingAt = (villager == this.entityRenderDispatcher.crosshairPickEntity);
+                    if (villager.hasCustomName() && isLookingAt && formattedName != null) {
                         return Component.empty().append(formattedName).append(" ").append(Component.nullToEmpty(displayName));
                     } else {
                         return Component.nullToEmpty(displayName);
