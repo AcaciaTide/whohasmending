@@ -1,6 +1,7 @@
 {
 	"required": true,
 	"package": "acaciatide.whohasmending.mixin",
+	"refmap": "whohasmending-refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [],
 	"injectors": {

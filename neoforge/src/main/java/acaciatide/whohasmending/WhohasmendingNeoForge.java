@@ -37,7 +37,7 @@ public class WhohasmendingNeoForge {
                     "key.whohasmending.toggle_display",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_H,
-                    KeyMapping.Category.MISC
+                    KeyMapping.CATEGORY_MISC
             );
             event.register(Whohasmending.toggleDisplayKey);
             Whohasmending.LOGGER.info("Registered key binding for toggle display (NeoForge)");
@@ -55,7 +55,7 @@ public class WhohasmendingNeoForge {
                     VillagerDataManager.getInstance().toggleDisplay();
                     boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
-                    client.gui.hud.setOverlayMessage(Component.literal(message), false);
+                    client.gui.setOverlayMessage(Component.literal(message), false);
                 }
             }
         }

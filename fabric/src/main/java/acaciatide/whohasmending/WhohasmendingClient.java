@@ -3,10 +3,10 @@ package acaciatide.whohasmending;
 import acaciatide.whohasmending.data.VillagerDataManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -43,11 +43,11 @@ public class WhohasmendingClient implements ClientModInitializer {
      */
     private void registerKeyBindings() {
         // MISCカテゴリにキーバインドを登録
-        Whohasmending.toggleDisplayKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+        Whohasmending.toggleDisplayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.whohasmending.toggle_display",
                 com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_H,
-                KeyMapping.Category.MISC
+                KeyMapping.CATEGORY_MISC
         ));
         
         Whohasmending.LOGGER.info("Registered key binding for toggle display");
@@ -67,7 +67,7 @@ public class WhohasmendingClient implements ClientModInitializer {
                 boolean enabled = VillagerDataManager.getInstance().isDisplayEnabled();
                 if (client.player != null) {
                     String message = enabled ? "§aWho Has Mending?: Trade Display ON" : "§cWho Has Mending?: Trade Display OFF";
-                    client.gui.hud.setOverlayMessage(Component.literal(message), false);
+                    client.gui.setOverlayMessage(Component.literal(message), false);
                 }
             }
             
@@ -90,15 +90,15 @@ public class WhohasmendingClient implements ClientModInitializer {
     private void registerCommands() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             // /whohasmending reset
-            dispatcher.register(ClientCommands.literal("whohasmending")
-                .then(ClientCommands.literal("reset")
+            dispatcher.register(ClientCommandManager.literal("whohasmending")
+                .then(ClientCommandManager.literal("reset")
                     .executes(context -> {
                         VillagerDataManager.getInstance().clearCurrentWorldData();
                         context.getSource().sendFeedback(Component.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
                         return 1;
                     })
                 )
-                .then(ClientCommands.literal("restore")
+                .then(ClientCommandManager.literal("restore")
                     .executes(context -> {
                         boolean success = VillagerDataManager.getInstance().restoreFromBackup();
                         String message = success 
@@ -108,14 +108,14 @@ public class WhohasmendingClient implements ClientModInitializer {
                         return success ? 1 : 0;
                     })
                 )
-                .then(ClientCommands.literal("backup")
+                .then(ClientCommandManager.literal("backup")
                     .executes(context -> {
                         VillagerDataManager.getInstance().createManualBackup();
                         context.getSource().sendFeedback(Component.literal("§a[WhoHasMending] Backup created successfully."));
                         return 1;
                     })
                 )
-                .then(ClientCommands.literal("validate")
+                .then(ClientCommandManager.literal("validate")
                     .executes(context -> {
                         acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
                         context.getSource().sendFeedback(Component.literal(result.getMessage()));
@@ -125,15 +125,15 @@ public class WhohasmendingClient implements ClientModInitializer {
             );
 
             // ショートカット: /whm サブコマンド
-            dispatcher.register(ClientCommands.literal("whm")
-                .then(ClientCommands.literal("reset")
+            dispatcher.register(ClientCommandManager.literal("whm")
+                .then(ClientCommandManager.literal("reset")
                     .executes(context -> {
                         VillagerDataManager.getInstance().clearCurrentWorldData();
                         context.getSource().sendFeedback(Component.literal("§c[WhoHasMending] Current world data has been reset/cleared."));
                         return 1;
                     })
                 )
-                .then(ClientCommands.literal("restore")
+                .then(ClientCommandManager.literal("restore")
                     .executes(context -> {
                         boolean success = VillagerDataManager.getInstance().restoreFromBackup();
                         String message = success 
@@ -143,14 +143,14 @@ public class WhohasmendingClient implements ClientModInitializer {
                         return success ? 1 : 0;
                     })
                 )
-                .then(ClientCommands.literal("backup")
+                .then(ClientCommandManager.literal("backup")
                     .executes(context -> {
                         VillagerDataManager.getInstance().createManualBackup();
                         context.getSource().sendFeedback(Component.literal("§a[WhoHasMending] Backup created successfully."));
                         return 1;
                     })
                 )
-                .then(ClientCommands.literal("validate")
+                .then(ClientCommandManager.literal("validate")
                     .executes(context -> {
                         acaciatide.whohasmending.data.ValidationResult result = VillagerDataManager.getInstance().validateData();
                         context.getSource().sendFeedback(Component.literal(result.getMessage()));

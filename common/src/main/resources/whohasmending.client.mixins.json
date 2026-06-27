@@ -1,11 +1,13 @@
 {
 	"required": true,
 	"package": "acaciatide.whohasmending.mixin.client",
+	"refmap": "whohasmending-refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"MerchantScreenMixin",
-		"LivingEntityRendererMixin",
-		"ScreenMixin"
+		"MobRendererMixin",
+		"ScreenMixin",
+		"EntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

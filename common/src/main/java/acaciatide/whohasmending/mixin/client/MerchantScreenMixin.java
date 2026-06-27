@@ -3,12 +3,12 @@ package acaciatide.whohasmending.mixin.client;
 import acaciatide.whohasmending.Whohasmending;
 import acaciatide.whohasmending.capture.VillagerTradeCapture;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.phys.EntityHitResult;
@@ -65,8 +65,8 @@ public abstract class MerchantScreenMixin {
     /**
      * 画面描画時にオファーをキャプチャ（最初の1回のみ）
      */
-    @Inject(method = "extractContents", at = @At("HEAD"))
-    private void onRenderMain(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("HEAD"))
+    private void onRenderMain(GuiGraphics guiGraphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
         // 既にキャプチャ済みの場合はスキップ
         if (whohasmending_captured) {
             return;
@@ -93,9 +93,7 @@ public abstract class MerchantScreenMixin {
                 UUID villagerUuid = whohasmending_targetVillager.getUUID();
                 
                 // 職業IDを取得
-                String professionId = whohasmending_targetVillager.getVillagerData().profession().unwrapKey()
-                        .map(k -> k.identifier().getPath())
-                        .orElse("none");
+                String professionId = whohasmending_targetVillager.getVillagerData().getProfession().name();
 
                 // 司書以外は記録しない
                 if (!"librarian".equals(professionId)) {
@@ -105,7 +103,7 @@ public abstract class MerchantScreenMixin {
                 }
                 
                 // 職業名を取得（現在の言語設定で翻訳）
-                String professionName = getProfessionDisplayName(whohasmending_targetVillager.getVillagerData().profession());
+                String professionName = getProfessionDisplayName(whohasmending_targetVillager.getVillagerData().getProfession());
                 
                 // 取引情報をキャプチャ
                 VillagerTradeCapture.captureFromOffers(offers, villagerUuid, professionName);
@@ -120,9 +118,7 @@ public abstract class MerchantScreenMixin {
                     UUID villagerUuid = villager.getUUID();
                     
                     // 職業IDを取得
-                    String professionId = villager.getVillagerData().profession().unwrapKey()
-                            .map(k -> k.identifier().getPath())
-                            .orElse("none");
+                    String professionId = villager.getVillagerData().getProfession().name();
 
                     // 司書以外は記録しない
                     if (!"librarian".equals(professionId)) {
@@ -130,7 +126,7 @@ public abstract class MerchantScreenMixin {
                         return;
                     }
 
-                    String professionName = getProfessionDisplayName(villager.getVillagerData().profession());
+                    String professionName = getProfessionDisplayName(villager.getVillagerData().getProfession());
                     
                     VillagerTradeCapture.captureFromOffers(offers, villagerUuid, professionName);
                     whohasmending_captured = true;
@@ -175,9 +171,9 @@ public abstract class MerchantScreenMixin {
      * 職業の表示名を取得
      */
     @Unique
-    private String getProfessionDisplayName(Holder<VillagerProfession> profession) {
+    private String getProfessionDisplayName(VillagerProfession profession) {
         // 現在の言語設定に従って翻訳された名前を取得
         return net.minecraft.network.chat.Component.translatable("entity.minecraft.villager." + 
-                profession.unwrapKey().map(k -> k.identifier().getPath()).orElse("none")).getString();
+                (profession != null ? profession.name() : "none")).getString();
     }
 }
