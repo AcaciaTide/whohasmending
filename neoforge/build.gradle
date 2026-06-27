@@ -28,6 +28,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
     // ソースJar生成タスクを有効化する
@@ -47,6 +50,7 @@ processResources {
         minecraft_version_range: minecraft_version_range,
         neoforge_version: neoforge_version,
         neoforge_loader_version_range: neoforge_loader_version_range,
+        neoforge_version_range: neoforge_version_range,
         mod_id: mod_id,
         version: version,
         mod_name: mod_name,

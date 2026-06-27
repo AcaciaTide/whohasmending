@@ -8,7 +8,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     
-    implementation project(':common')
+    implementation project(path: ':common', configuration: 'namedElements')
 }
 
 sourceSets {
@@ -35,6 +35,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
     // ソースJar生成タスクを有効化する
