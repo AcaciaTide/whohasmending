@@ -6,6 +6,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -15,7 +16,7 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-@Mod(Whohasmending.MOD_ID)
+@Mod(value = Whohasmending.MOD_ID, dist = Dist.CLIENT)
 public class WhohasmendingNeoForge {
     public static KeyMapping toggleDisplayKey;
     public WhohasmendingNeoForge(IEventBus modEventBus) {

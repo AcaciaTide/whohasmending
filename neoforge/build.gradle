@@ -46,6 +46,7 @@ processResources {
         minecraft_version: minecraft_version,
         minecraft_version_range: minecraft_version_range,
         neoforge_version: neoforge_version,
+        neoforge_version_range: neoforge_version_range,
         neoforge_loader_version_range: neoforge_loader_version_range,
         mod_id: mod_id,
         version: version,
