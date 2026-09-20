@@ -14,7 +14,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import org.lwjgl.glfw.GLFW;
 
 @Mod(Whohasmending.MOD_ID)
 public class WhohasmendingNeoForge {
@@ -35,8 +34,8 @@ public class WhohasmendingNeoForge {
         public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
             toggleDisplayKey = new KeyMapping(
                     "key.whohasmending.toggle_display",
-                    InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_H,
+                    InputConstants.Type.KEYBOARD,
+                    InputConstants.KEY_H,
                     KeyMapping.Category.MISC
             );
             event.register(toggleDisplayKey);
